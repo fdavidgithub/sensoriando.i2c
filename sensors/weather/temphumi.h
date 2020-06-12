@@ -4,18 +4,23 @@
  *  SimpleDHT
  */
 #include <SimpleDHT.h>
- 
+
+/*
+ * MACROS
+ */
+#define DEBUG
+
 #define TEMPERATURE_ID    4    //id of temperature on table Sensors
 #define HUMIDITY_ID       15   //id of himidity on table Sensors
 #define TEMPHUMI_GPIO  2
  
 /* 
- * Global variables
+ * GlobalVariables
  */
 SimpleDHT11 dht11(TEMPHUMI_GPIO);
 
 /*
- * Functions
+ * functions
  */
 int temphumi_init()
 {

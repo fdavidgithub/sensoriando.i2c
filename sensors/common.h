@@ -8,12 +8,13 @@
  */
 
 /*
- * Macro
+ * MACROS
  */
 //#define DEBUG
 
 #define I2C_CMD_NORMAL_LEN  16
 #define I2C_ADDRESS_SOUND   0x01
+#define I2C_ADDRESS_WEATHER 0x02
 
 /*
  * Layout Data Stream
@@ -26,14 +27,14 @@
 #define ETX                             0x03    //end of text
 
 /*
- * Global variables
+ * GlobalVariables
  */
 enum modes {NORMAL, INFO}; 
 int mode_slave = NORMAL;
 int mode_sensor;
  
 /*
- * Functions
+ * functions
  */
 void(* resetFunc) (void) = 0; //declare reset function @ address 0
 
