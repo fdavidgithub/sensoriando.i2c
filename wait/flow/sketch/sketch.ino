@@ -1,34 +1,7 @@
-/* Read flow sensor and publish in MQTT server
- * Francis David (www.fdavid.com.br) 
+/* 
+ * Read flow sensor and publish in MQTT server
+ * https://github.com/fdavidgithub/sensoriando.iot/tree/master/flow
  * 
- * Build with IDE Arduino 1.8.4
- *
- * SCHEME LED RGB
- * GPIO      Function    On
- * 1        Green       GPIO
- * 2        Ground      GND           
- * 3        Blue        GPIO
- * 4        Red         GPIO
- * 
- * SCHEME FLOW SENSOR
- * GPIO      Function    On
- * Red      VCC         5v
- * Brown    Ground      GND           
- * Yellow   Signal      GPIO
- *
- * SCHEME PUSH BUTTON
- * GPIO      Function    On
- * 1                    GPIO
- * 2              GND           
- * 3              GPIO
- * 4              GPIO
- *
- * REQUIREMENT
- *  Board ESP8266
- *  Libraries (Sketch >> Include Library >> Manage Libraies)
- *      PubSubClient (MQTT Client)  
- *      WifiManager (Wifi ESSID)
- *  Server MQTT
  */
 #include <ESP8266WiFi.h>    
 #include <PubSubClient.h>
@@ -253,4 +226,3 @@ void loop()
     }
    
 }
-
