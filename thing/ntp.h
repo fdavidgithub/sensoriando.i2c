@@ -1,4 +1,5 @@
 #ifndef NTPLIB
+#define NTPLIB
 /*
  * 
  */
@@ -11,9 +12,7 @@
 /*
  * MACROS
  */
-#define NTPLIB
 //#define DEBUG
-
 #define TIMEZONE        0   //UTC
 
 /*

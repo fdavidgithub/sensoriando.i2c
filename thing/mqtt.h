@@ -1,4 +1,5 @@
 #ifndef MQTTLIB
+#define MQTTLIB
 /*
  * 
  */
@@ -11,7 +12,6 @@
 /*
  * MACROS
  */
-#define MQTTLIB
 //#define DEBUG
 
 #define MESSAGE_ID      1   //id of message on table Sensors

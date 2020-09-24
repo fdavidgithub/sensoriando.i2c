@@ -1,18 +1,13 @@
 #ifndef I2CLIB
+#define I2CLIB
 /*
  * 
  */
-#include <Wire.h>
 
 /*
  * MACROS
  */
-#define I2CLIB
 //#define DEBUG
-
-// ESP8266 have 2xSDA and 2xSCL (D1,D2/D4,D3), but you can use only one
-#define GPIO_SDA     D1     //GPIO 5
-#define GPIO_SCL     D2     //GPIO 4
 
 /*
  * Layout Data Stream
@@ -113,7 +108,7 @@ int i2c_receivecommand(byte address)
 DataStream i2c_read(byte address) {
     int8_t crc;
     int8_t stream[I2C_CMD_NORMAL_LEN];
-    char stream_value[sizeof(float)];
+    char stream_value[sizeof(float)+1];
     byte i;
     DataStream data;
 
@@ -129,24 +124,25 @@ DataStream i2c_read(byte address) {
 for (int dg=0; dg<I2C_CMD_NORMAL_LEN; dg++) Serial.printf("[%d] 0x%02x\n", dg, stream[dg]);
 #endif
 
-    data.id = 0;
-    data.value = 0;
-    data.crc = 0;
-
-    for (i=1; i<I2C_CMD_NORMAL_LEN; i++) {
-        if ( (stream[0] != I2C_STX) || (stream[i] == I2C_ETX) ){
+    for (i=2; i<I2C_CMD_NORMAL_LEN; i++) {
+        if ( (stream[0] != I2C_STX) || (stream[i] == I2C_ETX) ) {
             break;
         }
             
-        stream_value[i-1] = stream[i];
+        stream_value[i-2] = stream[i];
     }
+
+#ifdef DEBUG
+Serial.printf("Array value %s - conv %f\n", stream_value, atof(stream_value));
+for (int dg=0; dg<sizeof(stream_value); dg++) Serial.printf("[%d] 0x%02x\n", dg, stream_value[dg]);
+#endif
 
     crc = i2c_gencrc(stream);
     
     data.id = stream[1];
     data.value = atof(stream_value);
     data.crc = crc == stream[I2C_CMD_NORMAL_LEN-1];
-    
+      
 #ifdef DEBUG
 Serial.printf("from ID: %d with value: %f and CRC: Calc 0x%02x Rev 0x%02x\n", data.id, data.value, crc, stream[I2C_CMD_NORMAL_LEN-1]);
 #endif

@@ -1,4 +1,5 @@
 #ifndef WIFILIB
+#define WIFILIB
 /*
  * 
  */
@@ -10,7 +11,6 @@
 /*
  * MACROS
  */
-#define WIFILIB
 //#define DEBUG
 
 /*

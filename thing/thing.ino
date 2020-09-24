@@ -16,37 +16,39 @@
  *    RTCLib            by Adafruit           v1.8.0
  *    NTPClient         by Fabrice Weinberg   v3.2.0
  *    PubSubClient      by Nick O' Leary      v2.7.0
+ *    Nanoshield_RTC    by Circuitar          v
  *
  */
 #include <ESP8266WiFi.h> 
+#include <Wire.h>
 
+#include "gpio.h"
 #include "rtc.h"
 #include "ntp.h"
 #include "wifi.h"
 #include "messages.h"
 #include "mqtt.h"
 #include "i2c.h"
+#include "sd.h"
 
+/*
+ * MACROS
+ */
 #define DEBUG
-
-//#define GPIO_RESET   D0     //GPIO 16
-#define GPIO_RED     D6     //GPIO 12      
-#define GPIO_GREEN   D7     //GPIO 13 
-#define GPIO_BLUE    D8     //GPIO 15   
 
 #define THING_UPDATE    1000    //Update server in miliseconds
 #define THING_RESET     5000
 #define THING_DEBOUNCE  1000
 
 /* 
- * Global variables
+ * GlobalVariables
  */
 long update_elapsedtime;
 DataInfo sensors[I2C_SCAN_MAX];
 
 
 /*
- * Functions
+ * functions
  */
 void logthing(char *msg) {
 #ifdef DEBUG
@@ -55,32 +57,34 @@ void logthing(char *msg) {
 #endif
 }
 
+
 void mode_error() {
-   digitalWrite(GPIO_RED, 255);
+/*   digitalWrite(GPIO_RED, 255);
    digitalWrite(GPIO_GREEN, 0);
    digitalWrite(GPIO_BLUE, 0);
-}
+*/}
 
 void mode_config()
 {
-    digitalWrite(GPIO_RED, 0);
+/*    digitalWrite(GPIO_RED, 0);
     digitalWrite(GPIO_GREEN, 0);
     digitalWrite(GPIO_BLUE, 255);
-}
+*/}
 
 void mode_normal()
 {
-    digitalWrite(GPIO_RED, 0);
+/*    digitalWrite(GPIO_RED, 0);
     digitalWrite(GPIO_GREEN, 0);
     digitalWrite(GPIO_BLUE, 0);
-}
+*/}
 
 void mode_send()
 {
-    digitalWrite(GPIO_RED, 0);
+/*    digitalWrite(GPIO_RED, 0);
     digitalWrite(GPIO_GREEN, 255);
     digitalWrite(GPIO_BLUE, 0);
-} 
+*/} 
+
           
 /*
  * Setting
@@ -100,10 +104,14 @@ void setup()
 
     Wire.begin(GPIO_SDA, GPIO_SCL);
 
-    // GPIOs
+    /*
+     * GPIO
+     */
+#ifdef GPIO_RED && GPIO_GREEN && GPIO_BLUE
     pinMode(GPIO_RED, OUTPUT);
     pinMode(GPIO_GREEN, OUTPUT);
     pinMode(GPIO_BLUE, OUTPUT);
+#endif
 
 #ifdef GPIO_RESET
     pinMode(GPIO_RESET, INPUT);

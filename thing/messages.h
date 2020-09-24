@@ -12,4 +12,5 @@
 #define MQTT_CRC            "CRC do not match"
 #define MQTT_I2CFAIL        "Communication failure"
 
+#define SD_
  

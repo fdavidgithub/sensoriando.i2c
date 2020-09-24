@@ -1,108 +1,47 @@
 #ifndef RTCLIB
+#define RTCLIB
 /*
- * 
+ * Date and time functions using a DS1307 RTC connected via I2C and Wire lib
  */
 #include <RTClib.h>
-
-#ifndef I2CLIB
-  #include "i2c.h"
-#endif
+#include <Nanoshield_RTC.h>
 
 /*
  * MACROS
  */
-#define RTCLIB
 //#define DEBUG
-
-#ifndef GPIO_SDA
-  #define GPIO_SDA D1 
-#endif
-
-#ifndef GPIO_SCL
-  #define GPIO_SCL D2
-#endif
 
 /*
  * GlobalVariables
  */
-RTC_DS1307 Rtc;
+Nanoshield_RTC rtc;
 
 /*
- * Functions
+ * functions
  */
 int rtc_init () { 
-  int result=1;
-
-#ifdef DEBUG
-    Serial.println("Init. RTC");
-#endif    
- 
-  if ( ! Rtc.begin()) {
-#ifdef DEBUG
-    Serial.println("Couldn't find RTC");
-#endif    
-
-    result=0;
-  } else if ( ! Rtc.isrunning() ) {
-#ifdef DEBUG
-    Serial.println("RTC is NOT running...");
-#endif    
-    // following line sets the RTC to the date & time this sketch was compiled
-    Rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
-     
-    delay(3000);      
-  }
-  
+  int result = rtc.begin();    
   return result;
 }
 
-DateTime rtc_get () {
-    DateTime now = Rtc.now();
-
-#ifdef DEBUG    
-    Serial.print(now.day(), DEC);
-    Serial.print('/');
-    Serial.print(now.month(), DEC);
-    Serial.print('/');
-    Serial.print(now.year(), DEC);
-   
-    Serial.print(now.hour(), DEC);
-    Serial.print(':');
-    Serial.print(now.minute(), DEC);
-    Serial.print(':');
-    Serial.println(now.second(), DEC);
-#endif
-
-  return now;
+DateTime rtc_get () {  
+    rtc.read();
+    return DateTime(rtc.getYear(), rtc.getMonth(), rtc.getDay(), rtc.getHours(), rtc.getMinutes(), rtc.getSeconds()); 
 }
 
-void rtc_sync(DateTime dt_ntp, DateTime dt_rtc)
-{
-  //If NTP is less than RTC, it ocurred error when connect with NTP 
-  if ( dt_ntp.unixtime() >= dt_rtc.unixtime() ) {
-#ifdef DEBUG
-    Serial.println("Updating RTC with NTP");
-#endif
-  
-    Rtc.adjust(DateTime(dt_ntp.year(), dt_ntp.month(), dt_ntp.day(), dt_ntp.hour(), dt_ntp.minute(), dt_ntp.second()));  
-
-#ifdef DEBUG    
-    Serial.print("RTC Updated to: ");
-    Serial.print(dt_rtc.year(), DEC);
-    Serial.print('/');
-    Serial.print(dt_rtc.month(), DEC);
-    Serial.print('/');
-    Serial.print(dt_rtc.day(), DEC);
-    Serial.print(" ");
-    Serial.print(dt_rtc.hour(), DEC);
-    Serial.print(':');
-    Serial.print(dt_rtc.minute(), DEC);
-    Serial.print(':');
-    Serial.print(dt_rtc.second(), DEC);
-    Serial.println("---------------------------------");
-#endif
-  }
+void rtc_sync(DateTime dt_ntp, DateTime dt_rtc) {
+    rtc.writeYear(dt_ntp.year());
+    rtc.writeMonth(dt_ntp.month());
+    rtc.writeDay(dt_ntp.day());
+    rtc.writeHours(dt_ntp.hour());
+    rtc.writeMinutes(dt_ntp.minute());
+    rtc.writeSeconds(dt_ntp.second());
+    
+    delay(100);
 }
 
+int rtc_check() {
+  return rtc.getDay() != 0;  
+}
 
 #endif

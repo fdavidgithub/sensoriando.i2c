@@ -13,17 +13,21 @@
  */
 #include <Wire.h>
 #include "common.h"
-#include "temphumi.h"
+#include "weather.h"
 
-#define DEBUG
+/*
+ * MACROS
+ */
+//#define DEBUG
 #define SENSOR_COUNT  2
 
 /* 
- * Global variables
+ * GlobalVariables
  */
+byte ValueTemperature, ValueHumidity;
 
 /*
- * Functions
+ * functions
  */
 void requestEvent() { 
     switch (mode_slave) {
@@ -43,8 +47,8 @@ Serial.print("Counter: ");Serial.println(SENSOR_COUNT);
 void temperature() { 
     char stream[I2C_CMD_NORMAL_LEN];
     float value;
-            
-    value = temperature_read();
+
+    value = (float)ValueTemperature;
         
 #ifdef DEBUG
 Serial.print("(temperature) Data request: ");Serial.println(value);
@@ -66,8 +70,8 @@ for (int dg=0; dg<I2C_CMD_NORMAL_LEN; dg++) Serial.println(stream[dg], HEX);
 void humidity() { 
     char stream[I2C_CMD_NORMAL_LEN];
     float value;
-            
-    value = humidity_read();
+
+    value = (float)ValueHumidity;
         
 #ifdef DEBUG
 Serial.print("(humidity) Data request: ");Serial.println(value);
@@ -99,7 +103,7 @@ void setup()
     Wire.onRequest(requestEvent);
     Wire.onReceive(receiveEvent);
        
-    if ( ! temphumi_init() ) {
+    if ( ! weather_init() ) {
 #ifdef DEBUG
 Serial.println("Weather sensors not found: rebooting...");
 #endif 
@@ -111,13 +115,13 @@ Serial.print("Address: 0x");Serial.println(I2C_ADDRESS_WEATHER, HEX);
 #endif
 
 #ifdef DEBUG
-    Serial.println("Waiting...");
+Serial.println("Waiting...");
 #endif    
 
 }
 
 void loop()
 {
-
+  weather_read(&ValueTemperature, &ValueHumidity);          
 }
  
